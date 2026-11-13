@@ -44,8 +44,19 @@ class Striker:
 
     # Used to render the object on the screen
     def display(self):
-        self.striker = pygame.draw.rect(screen, 
-                            self.color, self.strikerRect)
+        pygame.draw.rect(
+            screen,
+            CYAN,
+            self.strikerRect,
+            border_radius=10
+        )
+        pygame.draw.rect(
+            screen,
+            WHITE,
+            self.strikerRect,
+            width=2,
+            border_radius=10
+        )
 
     # Used to update the state of the object
     def update(self, xFac):
@@ -92,8 +103,19 @@ class Block:
     # if its health is greater than 0
     def display(self):
         if self.health > 0:
-            self.brick = pygame.draw.rect(screen, 
-                                self.color, self.blockRect)
+            pygame.draw.rect(
+            screen,
+            self.color,
+            self.blockRect,
+            border_radius=5
+        )
+        pygame.draw.rect(
+            screen,
+            WHITE,
+            self.blockRect,
+            width=1,
+            border_radius=5
+        )
 
     # Used to decrease the health of the block
     def hit(self):
@@ -184,7 +206,7 @@ def populateBlocks(blockWidth, blockHeight,
         for j in range(0, HEIGHT//2, blockHeight+verticalGap):
             listOfBlocks.append(
                 Block(i, j, blockWidth, blockHeight, 
-                      random.choice([WHITE, GREEN])))
+                      random.choice([GREEN, BLUE, PURPLE, YELLOW, CYAN])))
 
     return listOfBlocks
 
