@@ -229,6 +229,7 @@ def gameOver():
 # Game Manager
 def main():
     running = True
+    paused = False
     lives = 3
     score = 0
 
@@ -282,14 +283,27 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    strikerXFac = -1
-                if event.key == pygame.K_RIGHT:
-                    strikerXFac = 1
+                if event.key == pygame.K_p:
+                    paused = not paused
+                if not paused:    
+                    if event.key == pygame.K_LEFT:
+                        strikerXFac = -1
+                    if event.key == pygame.K_RIGHT:
+                        strikerXFac = 1
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                     strikerXFac = 0
+
+        if paused:
+            pauseText = font.render("PAUSED - Press P to Resume", True, YELLOW)
+            pauseRect = pauseText.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+
+            screen.blit(pauseText, pauseRect)
+
+            pygame.display.update()
+            clock.tick(FPS)
+            continue            
 
         # Collision check
         if(collisionChecker(striker.getRect(),
