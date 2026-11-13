@@ -7,15 +7,20 @@ pygame.init()
 WIDTH, HEIGHT = 600, 500
 
 # Colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GREEN = (0, 255, 0)
-RED = (255, 0, 0)
+BLACK = (10, 15, 30)
+WHITE = (240, 245, 255)
+GREEN = (0, 220, 150)
+RED = (255, 75, 95)
+
+BLUE = (60, 130, 255)
+PURPLE = (160, 90, 255)
+YELLOW = (255, 210, 70)
+CYAN = (40, 220, 230)
 
 font = pygame.font.Font('freesansbold.ttf', 15)
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Block Breaker")
+pygame.display.set_caption("NEON BRICK BREAKER")
 
 # to control the frame rate
 clock = pygame.time.Clock()
