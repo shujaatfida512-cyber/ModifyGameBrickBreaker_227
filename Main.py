@@ -214,16 +214,32 @@ def populateBlocks(blockWidth, blockHeight,
 # Once all the lives are over, this function waits until
 # exit or space bar is pressed and does the corresponding action
 def gameOver():
-    gameOver = True
+    while True:
+        screen.fill(BLACK)
 
-    while gameOver:
-        # Event handling
+        message = font.render(
+            "GAME OVER - Press R to Restart or ESC to Exit",
+            True,
+            RED
+        )
+
+        messageRect = message.get_rect(
+            center=(WIDTH // 2, HEIGHT // 2)
+        )
+
+        screen.blit(message, messageRect)
+        pygame.display.update()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
+
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_r:
                     return True
+
+                if event.key == pygame.K_ESCAPE:
+                    return False
 
 
 # Game Manager
@@ -270,13 +286,16 @@ def main():
         if lives <= 0:
             running = gameOver()
 
-            while listOfBlocks:
-                listOfBlocks.pop(0)
+            if running:
+                lives = 3
+                score = 0
+                striker = Striker(0, HEIGHT-50, 100, 20, 10, WHITE)
+                strikerXFac = 0
+                ball = Ball(0, HEIGHT-150, 7, 5, WHITE)
 
-            lives = 3
-            score = 0
-            listOfBlocks = populateBlocks(
-                blockWidth, blockHeight, horizontalGap, verticalGap)
+                listOfBlocks = populateBlocks(
+                    blockWidth, blockHeight, horizontalGap, verticalGap
+                )
 
         # Event handling
         for event in pygame.event.get():
