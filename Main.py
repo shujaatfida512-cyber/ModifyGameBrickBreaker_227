@@ -241,57 +241,86 @@ def gameOver():
                 if event.key == pygame.K_ESCAPE:
                     return False
 
+# High Score Functions
+def loadHighScore():
+    try:
+        with open("highscore.txt", "r") as file:
+            return int(file.read())
+    except (FileNotFoundError, ValueError):
+        return 0
+
+
+def saveHighScore(highScore):
+    with open("highscore.txt", "w") as file:
+        file.write(str(highScore))
 
 # Game Manager
+
 def main():
     running = True
     paused = False
     lives = 3
     score = 0
+    highScore = loadHighScore()
 
     scoreText = font.render("score", True, WHITE)
     scoreTextRect = scoreText.get_rect()
-    scoreTextRect.center = (20, HEIGHT-10)
+    scoreTextRect.center = (20, HEIGHT - 10)
 
     livesText = font.render("Lives", True, WHITE)
     livesTextRect = livesText.get_rect()
-    livesTextRect.center = (120, HEIGHT-10)
+    livesTextRect.center = (120, HEIGHT - 10)
 
-    striker = Striker(0, HEIGHT-50, 100, 20, 10, WHITE)
+    highScoreText = font.render(
+        "Best: " + str(highScore), True, YELLOW
+    )
+    highScoreTextRect = highScoreText.get_rect()
+    highScoreTextRect.center = (450, HEIGHT - 10)
+
+    striker = Striker(0, HEIGHT - 50, 100, 20, 10, WHITE)
     strikerXFac = 0
 
-    ball = Ball(0, HEIGHT-150, 7, 5, WHITE)
+    ball = Ball(0, HEIGHT - 150, 7, 5, WHITE)
 
     blockWidth, blockHeight = 40, 15
     horizontalGap, verticalGap = 20, 20
 
     listOfBlocks = populateBlocks(
-        blockWidth, blockHeight, horizontalGap, verticalGap)
+        blockWidth, blockHeight, horizontalGap, verticalGap
+    )
 
     # Game loop
     while running:
+
         screen.fill(BLACK)
+
+        # Display score, lives and high score
+        scoreText = font.render("Score: " + str(score), True, WHITE)
+        livesText = font.render("Lives: " + str(lives), True, WHITE)
+        highScoreText = font.render(
+            "Best: " + str(highScore), True, YELLOW
+        )
+
         screen.blit(scoreText, scoreTextRect)
         screen.blit(livesText, livesTextRect)
+        screen.blit(highScoreText, highScoreTextRect)
 
-        scoreText = font.render("Score : " + str(score), True, WHITE)
-        livesText = font.render("Lives : " + str(lives), True, WHITE)
-
-        # If all the blocks are destroyed, then we repopulate them
+        # If all the blocks are destroyed, repopulate them
         if not listOfBlocks:
             listOfBlocks = populateBlocks(
-                blockWidth, blockHeight, horizontalGap, verticalGap)
+                blockWidth, blockHeight, horizontalGap, verticalGap
+            )
 
-        # All the lives are over. So, the gameOver() function is called
+        # Game over and restart
         if lives <= 0:
             running = gameOver()
 
             if running:
                 lives = 3
                 score = 0
-                striker = Striker(0, HEIGHT-50, 100, 20, 10, WHITE)
+                striker = Striker(0, HEIGHT - 50, 100, 20, 10, WHITE)
                 strikerXFac = 0
-                ball = Ball(0, HEIGHT-150, 7, 5, WHITE)
+                ball = Ball(0, HEIGHT - 150, 7, 5, WHITE)
 
                 listOfBlocks = populateBlocks(
                     blockWidth, blockHeight, horizontalGap, verticalGap
@@ -301,10 +330,12 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
                     paused = not paused
-                if not paused:    
+
+                if not paused:
                     if event.key == pygame.K_LEFT:
                         strikerXFac = -1
                     if event.key == pygame.K_RIGHT:
@@ -314,28 +345,38 @@ def main():
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                     strikerXFac = 0
 
+        # Pause screen
         if paused:
-            pauseText = font.render("PAUSED - Press P to Resume", True, YELLOW)
-            pauseRect = pauseText.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+            pauseText = font.render(
+                "PAUSED - Press P to Resume", True, YELLOW
+            )
+            pauseRect = pauseText.get_rect(
+                center=(WIDTH // 2, HEIGHT // 2)
+            )
 
             screen.blit(pauseText, pauseRect)
 
             pygame.display.update()
             clock.tick(FPS)
-            continue            
+            continue
 
         # Collision check
-        if(collisionChecker(striker.getRect(),
-                            ball.getRect())):
+        if collisionChecker(striker.getRect(), ball.getRect()):
             ball.hit()
+
         for block in listOfBlocks:
-            if(collisionChecker(block.getRect(), ball.getRect())):
+            if collisionChecker(block.getRect(), ball.getRect()):
                 ball.hit()
                 block.hit()
 
                 if block.getHealth() <= 0:
                     listOfBlocks.pop(listOfBlocks.index(block))
                     score += 5
+
+                    # Update high score
+                    if score > highScore:
+                        highScore = score
+                        saveHighScore(highScore)
 
         # Update
         striker.update(strikerXFac)
@@ -346,7 +387,7 @@ def main():
             ball.reset()
             print(lives)
 
-        # Display
+        # Display game objects
         striker.display()
         ball.display()
 
