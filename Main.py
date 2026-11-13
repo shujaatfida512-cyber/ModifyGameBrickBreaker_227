@@ -203,7 +203,7 @@ def populateBlocks(blockWidth, blockHeight,
     listOfBlocks = []
 
     for i in range(0, WIDTH, blockWidth+horizontalGap):
-        for j in range(0, HEIGHT//2, blockHeight+verticalGap):
+        for j in range(50, HEIGHT//2, blockHeight+verticalGap):
             listOfBlocks.append(
                 Block(i, j, blockWidth, blockHeight, 
                       random.choice([GREEN, BLUE, PURPLE, YELLOW, CYAN])))
@@ -293,6 +293,15 @@ def main():
     while running:
 
         screen.fill(BLACK)
+        instructionText = font.render(
+            "Move: LEFT / RIGHT  |  Pause: P", True, WHITE
+        )
+
+        instructionRect = instructionText.get_rect(
+            center=(WIDTH // 2, 20)
+        )
+
+        screen.blit(instructionText, instructionRect)
 
         # Display score, lives and high score
         scoreText = font.render("Score: " + str(score), True, WHITE)
